@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require("express");
-require("./backend/config");
+require("./db/config");
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const jwtKey = 'luckshowindia@1301';
@@ -8,8 +8,8 @@ const jwtKey = 'luckshowindia@1301';
 const PORT = process.env.PORT;
 
 
-const User = require('./backend/User');
-const Lottry = require('./backend/Lottry');
+const User = require('./db/User');
+const Lottry = require('./db/Lottry');
 const app = express();
 app.use(cors());
 
@@ -23,6 +23,11 @@ app.post("/luckindia", async (req, resp) => {
 })
 
 // API FOR LOGIN 
+
+app.get("/", async(req, resp)=>{
+  resp.send("server is up and running")
+})
+
 
 app.post("/login", async (req, resp) => {
   if (req.body.password && req.body.email) {
@@ -65,8 +70,8 @@ app.get("/lottry-data-latest", async (req, resp) => {
 
     // Fetch latest results for each quiz
     const lottryData = await Lottry.find({
-      date: { $lte: currentDate.toISOString().slice(0, 10) }, // Ensure date is not greater than the current date
-      endTime: { $lte: `${currentDate.getHours()}:${currentDate.getMinutes()}` }, // Ensure endTime is not greater than the current time
+      date: { $lte: currentDate.toISOString().slice(0, 10) }, 
+      endTime: { $lte: `${currentDate.getHours()}:${currentDate.getMinutes()}` }, 
     });
 
     lottryData.forEach((item) => {
